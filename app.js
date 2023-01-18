@@ -38,7 +38,7 @@ app.post("/", function(req, res){
 
     const jsonData = JSON.stringify(data);
 
-    const url = `https://us10.api.mailchimp.com/3.0/lists/${process.env.audienceID}`;
+    const url = `https://us10.api.mailchimp.com/3.0/lists/${process.env.listID}`;
 
     const options = {
         method : "POST",
@@ -62,43 +62,18 @@ app.post("/", function(req, res){
     request.end();
 });
 
-app.post("/failure", (req, res)=>{
-    res.redirect("/");
+//Post route for failure page 
+app.post("/failure", (req, res)=>{         //When user clicks try again button on failure page
+    res.redirect("/");                     //redirects to home route i.e. signup page
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-async function run() {
-    const response = await mailchimp.ping.get();
+//Get API : fetches list of all contacts 
+app.get('/listUsers', async(req, res, next)=>{
+    const response = await mailchimp.lists.getListMembersInfo(`${process.env.listID}`);
     console.log(response);
-}
-  
-run();
+    res.status(200).json(response);
+});
 
 app.listen(4000, () => {
     console.log("Server started at port 4000");
